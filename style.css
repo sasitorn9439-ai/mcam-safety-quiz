@@ -1,0 +1,71 @@
+/*
+VOICE: loud, fast, friendly game show for a factory safety briefing
+IDEA: a safety sign board — hazard-stripe edges, bold pictogram shapes
+PICTURE: the four answer tiles and the big PIN/QR are the picture
+COLOUR: deep violet stage, safety-yellow accent, four answer colours
+TYPE: Kanit headings, Sarabun body (Thai + Latin)
+*/
+:root{
+  --bg:#22104a;--bg2:#2f1868;--panel:#ffffff;--ink:#1a1530;--muted:#6b6585;
+  --hi:#ffd21f;--good:#26a641;--bad:#e5243b;
+  --red:#e21b3c;--blue:#1368ce;--yellow:#d89e00;--green:#26890c;
+  --r:14px;--shadow:0 6px 0 rgba(0,0,0,.25);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(1200px 700px at 80% -10%,#4a23a0 0,transparent 60%),var(--bg);color:#fff;
+  font:16px/1.5 "Sarabun","Noto Sans Thai",system-ui,sans-serif;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+h1,h2,h3,.k{font-family:"Kanit","Sarabun",system-ui,sans-serif;font-weight:600;line-height:1.15;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;border-radius:10px}
+:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+.hidden{display:none!important}
+.stripe{height:10px;background:repeating-linear-gradient(-45deg,var(--hi) 0 14px,#111 14px 28px)}
+.top{display:flex;align-items:center;gap:12px;padding:10px max(3vw,14px);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-family:Kanit,sans-serif;font-weight:600;font-size:18px}
+.brand i{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:8px;background:var(--hi);color:#111;font-style:normal;font-weight:700}
+.spacer{flex:1}
+.net{display:inline-flex;align-items:center;gap:6px;font-size:13px;opacity:.85;white-space:nowrap}
+.net b{width:10px;height:10px;border-radius:50%;background:#999;display:inline-block}
+.net.ok b{background:#3ddc6b;box-shadow:0 0 8px #3ddc6b}.net.bad b{background:var(--bad)}
+.icon-btn{background:rgba(255,255,255,.12);padding:8px 12px;min-height:40px;font-size:14px}
+.icon-btn:hover{background:rgba(255,255,255,.2)}
+.btn{background:var(--hi);color:#111;font-family:Kanit,sans-serif;font-weight:600;font-size:18px;padding:12px 26px;min-height:48px;box-shadow:var(--shadow);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn.dark{background:#111;color:#fff}
+.btn.small{font-size:15px;padding:8px 16px;min-height:40px}
+.card{background:var(--panel);color:var(--ink);border-radius:var(--r);box-shadow:var(--shadow);padding:clamp(16px,3vw,28px)}
+.wrap{max-width:1240px;margin:0 auto;padding:clamp(14px,3vw,32px) max(3vw,14px)}
+.th{display:block}.en{display:block;opacity:.72;font-size:.62em;font-weight:400;margin-top:.2em}
+.muted{color:var(--muted)}
+label{font-weight:600;font-size:14px}
+input[type=text],input[type=number],input:not([type]),select,textarea{width:100%;font-size:16px;padding:12px 14px;border-radius:10px;border:2px solid #d8d4e6;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{border-color:#6b3fd1;outline:none}
+
+/* Answer tiles */
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.opt{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:12px;color:#fff;box-shadow:var(--shadow);text-align:left;font-family:Kanit,sans-serif;font-weight:500;font-size:clamp(17px,2.2vw,28px);min-height:84px;position:relative}
+.opt svg{width:clamp(30px,3.4vw,46px);height:clamp(30px,3.4vw,46px);flex:none}
+.opt.red{background:var(--red)}.opt.blue{background:var(--blue)}.opt.yellow{background:var(--yellow)}.opt.green{background:var(--green)}
+.opt.dim{opacity:.28}
+.opt .cnt{margin-left:auto;font-size:.9em;font-weight:700;white-space:nowrap}
+.opt.correct::after{content:"✓";position:absolute;right:-8px;top:-10px;width:34px;height:34px;border-radius:50%;background:#fff;color:var(--good);display:grid;place-items:center;font-size:22px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+
+/* Timer */
+.timer{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--hi) var(--p,100%),rgba(255,255,255,.15) 0);flex:none}
+.timer span{width:74px;height:74px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;font:700 32px Kanit,sans-serif}
+.timer.low span{color:#ff6b7d}
+.bar{height:10px;border-radius:6px;background:rgba(255,255,255,.18);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--hi);transition:width .25s linear}
+
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,40px);opacity:0;background:#111;color:#fff;padding:12px 18px;border-radius:10px;z-index:99;transition:.25s;max-width:90vw;text-align:center}
+#toast.on{transform:translate(-50%,0);opacity:1}
+.pulse{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.06)}}
+.pop{animation:pop .35s cubic-bezier(.2,1.4,.5,1)}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){.pulse,.pop{animation:none}.bar i{transition:none}}
+@media (max-width:600px){.opt{min-height:64px;padding:12px;font-size:17px}.timer{width:70px;height:70px}.timer span{width:56px;height:56px;font-size:24px}}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Host · MCAM Safety Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="host.css">
+</head>
+<body>
+<div class="stripe"></div>
+<header class="top">
+  <div class="brand"><i>!</i><span>MCAM Safety Quiz <small class="muted-w">· Host</small></span></div>
+  <div class="spacer"></div>
+  <span class="net" id="net"><b></b><span>กำลังเชื่อมต่อ…</span></span>
+  <button class="icon-btn" id="btnMute" type="button">🔊 เสียง</button>
+  <button class="icon-btn" id="btnFull" type="button">⛶ เต็มจอ</button>
+</header>
+
+<main id="app">
+  <!-- SETUP -->
+  <section id="sSetup" class="wrap screen">
+    <div class="sethead"><h2>เลือกชุดคำถาม <small class="muted-w">Choose a question set · 20 ชุด</small></h2></div>
+    <div class="sets" id="sets"></div>
+    <div class="setup">
+      <div class="card">
+        <h1 class="k" id="setupTitle">ควิซความปลอดภัย</h1>
+        <p class="muted" id="setupMeta"></p>
+        <div id="resumeBox" class="resume hidden">
+          <div><b>มีเกมที่ค้างอยู่</b> <span id="resumeInfo" class="muted"></span><br><small class="muted">Unfinished game found — resume it?</small></div>
+          <div class="row"><button class="btn small" id="btnResume" type="button">เล่นต่อ · Resume</button><button class="btn small ghost" id="btnDiscard" type="button">ทิ้ง · Discard</button></div>
+        </div>
+        <div class="gopts">
+          <label class="chk"><input type="checkbox" id="optShuffleA"> สุ่มตำแหน่งคำตอบ · Shuffle answers</label>
+          <label class="chk"><input type="checkbox" id="optShuffleQ"> สุ่มลำดับคำถาม · Shuffle questions</label>
+          <label class="tsel">เวลาต่อข้อ · Time
+            <select id="optTime"><option value="0">ตามชุดคำถาม</option><option value="10">10 วินาที</option><option value="15">15 วินาที</option><option value="20">20 วินาที</option><option value="30">30 วินาที</option><option value="45">45 วินาที</option><option value="60">60 วินาที</option></select>
+          </label>
+        </div>
+        <div class="row wrap-row">
+          <button class="btn" id="btnCreate" type="button">สร้างเกม · Create game</button>
+          <button class="btn ghost" id="btnEdit" type="button">แก้ไขคำถาม · Edit questions</button>
+        </div>
+        <ol class="qlist" id="qList"></ol>
+      </div>
+      <aside class="how">
+        <h3>วิธีเล่น · How it works</h3>
+        <ol>
+          <li>กด <b>สร้างเกม</b> แล้วเปิดหน้านี้ขึ้นจอโปรเจกเตอร์</li>
+          <li>ผู้เล่นสแกน QR หรือเข้าเว็บแล้วใส่ PIN บนมือถือ ไม่ต้องลงแอป</li>
+          <li>ตอบถูกและเร็วได้คะแนนมาก ตอบถูกติดกันได้โบนัส</li>
+          <li>จบเกม ดาวน์โหลดผลเป็น CSV ใช้เป็นหลักฐานการอบรมได้</li>
+        </ol>
+        <p class="tip">ถ้าเครือข่ายบริษัทบล็อก ให้ผู้เล่นใช้ 4G/5G หรือเปิด Hotspot ให้เครื่อง Host</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LOBBY -->
+  <section id="sLobby" class="wrap screen hidden">
+    <div class="lobby">
+      <div class="joinbox card">
+        <div class="joinurl">เข้าเล่นที่ · Join at<br><b id="joinUrl"></b></div>
+        <div class="pinlabel">Game PIN</div>
+        <div class="pin k" id="pin">——</div>
+        <div id="qr" class="qr" aria-label="QR code to join"></div>
+        <button class="icon-btn dark-ib" id="btnCopy" type="button">คัดลอกลิงก์ · Copy link</button>
+      </div>
+      <div class="players">
+        <div class="row between">
+          <h2><span id="pCount">0</span> ผู้เล่น <small class="muted-w">players</small></h2>
+          <button class="btn" id="btnStart" type="button" disabled>เริ่มเกม · Start ▶</button>
+        </div>
+        <p class="muted-w small" id="lobbyHint">รอผู้เล่นเข้าร่วม… แตะชื่อเพื่อนำผู้เล่นออก · Tap a name to remove</p>
+        <div class="chips" id="chips"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUESTION / READY / REVEAL -->
+  <section id="sQ" class="wrap screen hidden">
+    <div class="qhead row between">
+      <span class="qnum k" id="qNum"></span>
+      <span class="muted-w" id="qAnswered"></span>
+    </div>
+    <h1 class="qtext card" id="qText"></h1>
+    <div class="qmid">
+      <div class="timer" id="timer"><span id="timerN">20</span></div>
+      <div id="readyBar" class="readybar hidden"><div class="k">เตรียมตัว… Get ready</div><div class="bar"><i id="readyFill"></i></div></div>
+      <div id="explain" class="explain card hidden"></div>
+      <div class="qactions">
+        <button class="btn ghost small" id="btnSkip" type="button">ข้าม / ปิดรับคำตอบ · End</button>
+        <button class="btn" id="btnNext" type="button">ถัดไป · Next ▶</button>
+      </div>
+    </div>
+    <div class="opts" id="qOpts"></div>
+  </section>
+
+  <!-- LEADERBOARD -->
+  <section id="sLb" class="wrap screen hidden">
+    <div class="row between"><h1>คะแนนสูงสุด · Scoreboard</h1><button class="btn" id="btnNext2" type="button">ถัดไป · Next ▶</button></div>
+    <ol class="lb" id="lb"></ol>
+  </section>
+
+  <!-- FINAL -->
+  <section id="sFinal" class="wrap screen hidden">
+    <h1 class="final-title">🏆 ผลการแข่งขัน · Final results</h1>
+    <div class="podium" id="podium"></div>
+    <div class="row wrap-row center">
+      <button class="btn" id="btnCsv" type="button">ดาวน์โหลดผล CSV · Download results</button>
+      <button class="btn ghost" id="btnNew" type="button">เกมใหม่ · New game</button>
+    </div>
+    <div class="card table-card">
+      <div class="scroll"><table class="results" id="results"></table></div>
+    </div>
+  </section>
+</main>
+
+<!-- EDITOR -->
+<dialog id="editor" class="editor">
+  <form method="dialog" id="edForm">
+    <div class="ed-head">
+      <h2>แก้ไขคำถาม · Edit questions</h2>
+      <div class="row wrap-row">
+        <button class="btn small ghost" type="button" id="edImport">นำเข้า JSON</button>
+        <button class="btn small ghost" type="button" id="edExport">ส่งออก JSON</button>
+        <button class="btn small ghost" type="button" id="edReset">คืนค่าเริ่มต้น</button>
+        <input type="file" id="edFile" accept=".json,application/json" class="hidden">
+      </div>
+    </div>
+    <div class="ed-title">
+      <label>ชื่อชุดคำถาม (ไทย)<input id="edTitleTh" maxlength="80"></label>
+      <label>Quiz title (English)<input id="edTitleEn" maxlength="80"></label>
+    </div>
+    <div id="edList"></div>
+    <div class="ed-foot">
+      <button class="btn small dark" type="button" id="edAdd">+ เพิ่มคำถาม · Add question</button>
+      <span class="spacer"></span>
+      <span class="ed-err" id="edErr" role="alert"></span>
+      <button class="btn small ghost" type="button" id="edCancel">ยกเลิก</button>
+      <button class="btn small" type="button" id="edSave">บันทึก · Save</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="confirmBox" class="confirm hidden" role="dialog" aria-modal="true">
+  <div class="card"><p id="confirmMsg"></p><div class="row center"><button class="btn small ghost" id="confirmNo" type="button">ยกเลิก</button><button class="btn small" id="confirmYes" type="button">ยืนยัน</button></div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mqtt@5.16.1/dist/mqtt.min.js"></script>
+<script>window.mqtt||document.write('<script src="https://unpkg.com/mqtt@5.16.1/dist/mqtt.min.js"><\/script>')</script>
+<script>window.mqtt||document.write('<script src="vendor/mqtt.min.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode.js"></script>
+<script>window.qrcode||document.write('<script src="https://unpkg.com/qrcode-generator@2.0.4/dist/qrcode.js"><\/script>')</script>
+<script>window.qrcode||document.write('<script src="vendor/qrcode.js"><\/script>')</script>
+<script src="questions.js"></script>
+<script src="common.js"></script>
+<script src="bus.js"></script>
+<script src="host.js"></script>
+<script src="music.js"></script>
+</body>
+</html>
