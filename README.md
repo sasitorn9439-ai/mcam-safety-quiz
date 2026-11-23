@@ -11,7 +11,8 @@ A Kahoot-style safety quiz for EHS Day and training — host on the projector, p
 - Shuffle answers / questions, time per question, per-set editor with JSON import/export
 - Speed + streak scoring, leaderboard, podium, CSV results (Excel-ready Thai)
 - Host & player reconnect/resume; tested with 100 simulated players
-- Background music `music/ppe-ready.mp3` ("PPE พร้อม") on the host screen; the host can swap in another file
+- Background music `music/ppe-ready.mp3` ("PPE พร้อม") in the lobby and scoreboard; the host can swap in another file
+- Generated countdown music during questions (`gamemusic.js`, WebAudio): drum-roll riser on "get ready", tempo 124 → 136 → 152 BPM at 10 s and 5 s left
 
 ## How it works
 Static site (no server). Real-time messages go through two free public MQTT brokers
@@ -24,7 +25,8 @@ Local test: `?broker=ws://localhost:8888/mqtt` on both pages.
 |---|---|
 | `index.html`, `player.js`, `player.css` | Player (phone) |
 | `host.html`, `host.js`, `host.css` | Host (projector) |
-| `music.js`, `music/` | Host background music |
+| `music.js`, `music/` | Host background music controller |
+| `gamemusic.js` | Procedural suspense music for the answer countdown |
 | `questions.js` | 20 question sets |
 | `bus.js` | Multi-broker MQTT transport |
 | `common.js`, `style.css` | Shared helpers, sounds, styles |
