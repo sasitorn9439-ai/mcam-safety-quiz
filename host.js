@@ -16,7 +16,7 @@
     var c = parseInt(x.c, 10); if (!(c >= 0 && c < 4)) c = 0;
     var t = parseInt(x.t, 10); if (!(t >= 5 && t <= 120)) t = 20;
     var xp = x.x || {};
-    return { th: str(x.th), en: str(x.en), o: o, c: c, t: t, x: { th: str(xp.th, 400), en: str(xp.en, 400) } };
+    return { th: str(x.th), en: str(x.en), o: o, c: c, t: t, x: { th: str(xp.th, 400), en: str(xp.en, 400) }, img: str(x.img, 40) };
   }
   function qErrors(q) {
     var e = [];
@@ -101,7 +101,7 @@
     var s = { seq: nextSeq(), pin: G.pin, phase: G.phase, qi: G.qi, total: G.quiz.questions.length,
       title: G.quiz.title, pc: playerIds().length };
     if (q && (G.phase === "ready" || G.phase === "question" || G.phase === "reveal")) {
-      s.q = { th: q.th, en: q.en, o: q.o, t: q.t };
+      s.q = { th: q.th, en: q.en, o: q.o, t: q.t, img: q.img || "" };
     }
     if (G.phase === "ready") s.remain = Math.max(0, READY_MS - (t - G.readyStart));
     if (G.phase === "question") { s.remain = Math.max(0, q.t * 1000 - (t - G.qStart)); s.ans = Object.keys(G.cur); }
@@ -325,6 +325,9 @@
     var q = curQ();
     $("qNum").textContent = "ข้อ " + (G.qi + 1) + " / " + G.quiz.questions.length;
     $("qText").innerHTML = Q.bi(q);
+    var art = q.img && window.QUIZ_ART && window.QUIZ_ART[q.img];
+    $("qImg").classList.toggle("hidden", !art);
+    if (art) $("qImg").innerHTML = art;
     var ready = G.phase === "ready", reveal = G.phase === "reveal";
     $("readyBar").classList.toggle("hidden", !ready);
     $("timer").classList.toggle("hidden", G.phase !== "question");

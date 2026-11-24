@@ -7,7 +7,8 @@ A Kahoot-style safety quiz for EHS Day and training — host on the projector, p
 - Live: https://mcam-safety-quiz.vercel.app
 
 ## Features
-- 20 question sets × 10 questions, Thai/English (`questions.js`)
+- 20 question sets × 15 questions, Thai/English, mixing standard knowledge questions with lighter scenario-based ones (`questions.js`)
+- One picture question per set, illustrated with small original SVG icons (`quizart.js`), shown on both the host screen and the player's phone
 - Shuffle answers / questions, time per question, per-set editor with JSON import/export
 - Speed + streak scoring, leaderboard, podium, CSV results (Excel-ready Thai)
 - Host & player reconnect/resume; tested with 100 simulated players
@@ -28,6 +29,7 @@ Local test: `?broker=ws://localhost:8888/mqtt` on both pages.
 | `music.js`, `music/` | Host background music controller |
 | `gamemusic.js` | Procedural suspense music for the answer countdown |
 | `questions.js` | 20 question sets |
+| `quizart.js` | Small library of original SVG illustrations for picture questions |
 | `bus.js` | Multi-broker MQTT transport |
 | `common.js`, `style.css` | Shared helpers, sounds, styles |
 | `vendor/` | Local fallbacks for mqtt.js and qrcode-generator |

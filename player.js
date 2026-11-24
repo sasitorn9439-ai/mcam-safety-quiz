@@ -161,6 +161,9 @@
       shownQi = S.qi;
       $("aNum").textContent = (S.qi + 1) + "/" + S.total;
       $("aQ").innerHTML = Q.bi(q);
+      var art = q.img && window.QUIZ_ART && window.QUIZ_ART[q.img];
+      $("aImg").classList.toggle("hidden", !art);
+      if (art) $("aImg").innerHTML = art;
       $("aOpts").innerHTML = [0, 1, 2, 3].map(function (i) {
         var o = q.o && q.o[i];
         if (!o || !((o.th || "").trim() || (o.en || "").trim())) return "";
